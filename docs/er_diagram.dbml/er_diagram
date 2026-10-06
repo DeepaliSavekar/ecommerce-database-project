@@ -1,0 +1,99 @@
+Table users {
+  user_id int [pk, increment]
+  full_name varchar
+  email varchar [unique]
+  password_hash varchar
+  phone varchar
+  role varchar
+  created_at timestamp
+}
+
+Table addresses {
+  address_id int [pk, increment]
+  user_id int [ref: > users.user_id]
+  street varchar
+  city varchar
+  state varchar
+  pincode varchar
+  country varchar
+  is_default boolean
+}
+
+Table categories {
+  category_id int [pk, increment]
+  name varchar [unique]
+  parent_id int [ref: > categories.category_id]
+}
+
+Table products {
+  product_id int [pk, increment]
+  name varchar
+  description text
+  price decimal
+  category_id int [ref: > categories.category_id]
+  sku varchar [unique]
+  is_active boolean
+  created_at timestamp
+}
+
+Table inventory {
+  inventory_id int [pk, increment]
+  product_id int [unique, ref: - products.product_id]
+  stock_qty int
+  reorder_level int
+  updated_at timestamp
+}
+
+Table orders {
+  order_id int [pk, increment]
+  user_id int [ref: > users.user_id]
+  address_id int [ref: > addresses.address_id]
+  order_date timestamp
+  status varchar
+  total_amount decimal
+}
+
+Table order_items {
+  order_item_id int [pk, increment]
+  order_id int [ref: > orders.order_id]
+  product_id int [ref: > products.product_id]
+  quantity int
+  unit_price decimal
+}
+
+Table payments {
+  payment_id int [pk, increment]
+  order_id int [unique, ref: - orders.order_id]
+  method varchar
+  amount decimal
+  status varchar
+  paid_at timestamp
+}
+
+Table reviews {
+  review_id int [pk, increment]
+  user_id int [ref: > users.user_id]
+  product_id int [ref: > products.product_id]
+  rating int
+  comment text
+  created_at timestamp
+}
+
+Table cart {
+  cart_id int [pk, increment]
+  user_id int [ref: > users.user_id]
+  product_id int [ref: > products.product_id]
+  quantity int
+  added_at timestamp
+}
+
+Table audit_log {
+  log_id int [pk, increment]
+  table_name varchar
+  record_id int
+  action varchar
+  old_value text
+  new_value text
+  changed_by varchar
+  changed_at timestamp
+}
